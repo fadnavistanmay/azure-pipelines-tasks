@@ -64,6 +64,17 @@ export default class ContainerConnection {
         return imageName;
     }
 
+    public getQualifiedImageName(repository: string) {
+        let imageName = repository;
+        var regUrl = url.parse(this.registryAuth["registry"]),
+        hostname = !regUrl.slashes ? regUrl.href : regUrl.host;
+        if (hostname.toLowerCase() !== "index.docker.io") {
+            imageName = hostname + "/" + repository;
+        }
+
+        return imageName;
+    }
+
     public close(): void {
         if (this.configurationDirPath && fs.existsSync(this.configurationDirPath)) {
             del.sync(this.configurationDirPath, {force: true});

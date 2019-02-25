@@ -1,0 +1,19 @@
+"use strict";
+
+import * as tl from "vsts-task-lib/task";
+import ContainerConnection from "docker-common/containerconnection";
+
+export function run(connection: ContainerConnection, outputUpdate: (data: string) => any): any {
+    var command = connection.createCommand();
+    command.on("stdout", output => {
+        // ~~ write this to a file and return the path
+        outputUpdate(output);
+    });
+
+    var dockerCommand = tl.getInput("command", true);
+    command.arg(dockerCommand);
+    
+    var commandArguments = tl.getInput("arguments", false); 
+    command.line(commandArguments);
+    return connection.execCommand(command);
+}
